@@ -14,20 +14,35 @@ log_session_count = 0
 
 openai_model = 'gpt-3.5-turbo'
 
+args = None
+
 def openai_init():
     env_openai_api_key = None
+
+    global args
+
+    if args == None:
+        print("ERROR :: openai_init() called without argparse initialization!")
+        sys.exit(1)
+
+    if args.token != None:
+        openai.api_key = args.token
+        return
 
     try:
         env_openai_api_key = os.environ['OPENAI_API_KEY']
 
     except KeyError:
-        print((
-            "ERROR :: Add a new line consisting of 'export "
-            "OPENAI_API_KEY=<api-key-value>' to your '.bash_profile'!"
-        ))
-        print("    > Located in your home directory")
-        print("    > May be '.bashrc' or another name depending on your system")
-
+        print("ERROR :: Unable to locate an OpenAI API key!")
+        print("    > Explicitly supply one using the '--token' option")
+        print(("    > Or add 'export OPENAI_API_KEY=<api-key-value>' to your "
+               ".bash_profile (or current shell equivalent)"))
+        #print((
+        #    "ERROR :: Add a new line consisting of 'export "
+        #    "OPENAI_API_KEY=<api-key-value>' to your '.bash_profile'!"
+        #))
+        #print("    > Located in your home directory")
+        #print("    > May be '.bashrc' or another name depending on your system")
         sys.exit(1)
 
     openai.api_key = env_openai_api_key
@@ -161,18 +176,20 @@ def init_prompt_list():
     return prompts
 
 def main():
-    arg_parser = argparse.ArgumentParser(
-        prog='GPTsh',
-        description='OpenAI ChatGPT shell controller (via Bash)'
-    )
-    arg_parser.add_argument(
-        '-l',
-        '--log',
-        action='store_true',
-        help=('Log session(s) to a file. Log file information printed upon '
-              'execution.')
-    )
+    arg_parser = argparse.ArgumentParser(prog='GPTsh',
+                                         description=('OpenAI ChatGPT shell '
+                                                      'controller (via Bash)'))
 
+    arg_parser.add_argument('-l',
+                            '--log',
+                            action='store_true',
+                            help=('Log session(s) to a file. Log file '
+                                  'information printed upon execution.'))
+    arg_parser.add_argument('-t',
+                            '--token',
+                            help='Explicitly provide an OpenAI API key.')
+
+    global args
     args = arg_parser.parse_args()
 
     openai_init()
