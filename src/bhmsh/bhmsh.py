@@ -84,24 +84,79 @@ def log_info(info=None):
     log_file.close()
 
 def init_prompt_list():
-    config_file_path = '/etc/business-handyman.d/actuator.conf'
+    #config_file_path = '/etc/business-handyman.d/actuator.conf'
 
     #if not os.path.isfile(config_file_path):
     #    raise FileNotFoundError(errno.ENOENT,
     #                            os.strerror(errno.ENOENT),
     #                            config_file_path)
 
-    prompts = [ ]
+    #prompts = [ ]
 
-    config_file = open(config_file_path, 'r')
+    #config_file = open(config_file_path, 'r')
 
-    for init_prompt in config_file:
-        prompts.append({
-          "role": "user",
-          "content": init_prompt.strip()
-        })
+    #for init_prompt in config_file:
+    #    prompts.append({
+    #      "role": "user",
+    #      "content": init_prompt.strip()
+    #    })
 
-    config_file.close()
+    #config_file.close()
+
+    prompts = [{
+      "role": "user",
+      "content": ("I am a Python 3 program that interfaces with ChatGPT and "
+                  "serve as a bridge between an enduser and the ChatGPT model.")
+    }, {
+      "role": "user",
+      "content": ("The enduser cannot interact with ChatGPT directly and must "
+                  "go through me.")
+    }, {
+      "role": "user",
+      "content": ("Responses from ChatGPT must be in plain text format and "
+                  'must either be a Bash script with "BASH-SCRIPT:" prepended '
+                  "to it or a processed version of the output from the Bash "
+                  "script that ChatGPT provides. There must never be any other "
+                  "type of output, including introductory or concluding "
+                  "remarks.")
+    }, {
+      "role": "user",
+      "content": ("If it's time for you to provide me with a Bash script to "
+                  'run, prepend the response with "BASH-SCRIPT:" followed by '
+                  "the actual Bash script. Only supply a valid bash script "
+                  'with "BASH-SCRIPT:" prepended to it and no other text.')
+    }, {
+      "role": "user",
+      "content": ("Once I execute ChatGPT's provided Bash script, I will "
+                  "return its output.")
+    }, {
+      "role": "user",
+      "content": 'The utility "curl" is installed, allowing internet access.'
+    }, {
+      "role": "user",
+      "content": "Assume I do not have sudo shell privileges: don't use sudo."
+    }, {
+      "role": "user",
+      "content": ("If you think sudo is manditory to accomplish the user's "
+                  'request, send me "SUDO-REQUIRED" as the processed output '
+                  "and I will handle it.")
+    }, {
+      "role": "user",
+      "content": ("Interactions must be clear and concise, strictly adhering "
+                  "to the given instructions, with a strong focus on providing "
+                  'only "BASH-SCRIPT:" commands or processed output. No '
+                  "introductory or concluding comments, including statements "
+                  "like \"Understood.\" or \"I'm ready for your prompts.\" "
+                  "should be made.")
+    }, {
+      "role": "user",
+      "content": ("Do not make assumptions about the system state or add "
+                  "unnecessary commentary to responses.")
+    }, {
+      "role": "user",
+      "content": ("Maintain a focus on providing accurate information in a "
+                  "precise manner. Begin.")
+    }]
 
     return prompts
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bhmsh"
-version = "0.0.1"
+version = "0.0.5"
 authors = [
   { name="Collin Hinson", email="collin@bizhandyman.com" },
 ]
@@ -21,8 +21,8 @@ dependencies = [
 ]
 
 [project.scripts]
-bhmsh = "bhmsh:main"
+bhmsh = "bhmsh.bhmsh:main"
 
 [project.urls]
 "Homepage" = "https://github.com/Business-Handyman-LLC/bhm-sh"
-"Bug Tracker" = "TODO"
+"Bug Tracker" = "https://github.com/Business-Handyman-LLC/bhm-sh/issues"
