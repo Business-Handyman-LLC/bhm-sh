@@ -99,25 +99,28 @@ def log_info(info=None):
     log_file.close()
 
 def init_prompt_list():
-    #config_file_path = '/etc/business-handyman.d/actuator.conf'
+    config_file_path = '/etc/business-handyman.d/actuator.conf'
 
-    #if not os.path.isfile(config_file_path):
-    #    raise FileNotFoundError(errno.ENOENT,
-    #                            os.strerror(errno.ENOENT),
-    #                            config_file_path)
+    # If there's a .conf, use it
+    if os.path.isfile(config_file_path):
+        print((f" >> Using '{config_file_path}' for prompt initialization"
+               f"{os.linesep}"))
 
-    #prompts = [ ]
+        prompts = [ ]
 
-    #config_file = open(config_file_path, 'r')
+        config_file = open(config_file_path, 'r')
 
-    #for init_prompt in config_file:
-    #    prompts.append({
-    #      "role": "user",
-    #      "content": init_prompt.strip()
-    #    })
+        for init_prompt in config_file:
+            prompts.append({
+              "role": "user",
+              "content": init_prompt.strip()
+            })
 
-    #config_file.close()
+        config_file.close()
 
+        return prompts
+
+    # And if there isn't a .conf, use these prompts
     prompts = [{
       "role": "user",
       "content": ("I am a Python 3 program that interfaces with ChatGPT and "
@@ -176,6 +179,11 @@ def init_prompt_list():
     return prompts
 
 def main():
+    # TODO: Inject version here
+    print(f'{os.linesep}')
+    print('        ~~~    BHMsh v1.1.2    ~~~')
+    print(f'{os.linesep}')
+
     arg_parser = argparse.ArgumentParser(prog='GPTsh',
                                          description=('OpenAI ChatGPT shell '
                                                       'controller (via Bash)'))
@@ -196,6 +204,8 @@ def main():
 
     if args.log:
         log_init()
+        print((f" >> Logging to \"{log_file_path}\""
+               f'{os.linesep}'))
 
     prompts = init_prompt_list()
 
@@ -203,13 +213,6 @@ def main():
         for prompt in prompts:
             log_info(json.dumps(prompt, indent=4))
 
-    # TODO: Inject version here
-    print(f'{os.linesep}')
-    print('        ~~~    BHMsh v1.0.0    ~~~')
-    print(f'{os.linesep}')
-    if args.log:
-        print((f" >> Logging to \"{log_file_path}\""
-               f'{os.linesep}'))
     print(f" >> How can I help you today?{os.linesep}")
 
     while True:
@@ -304,12 +307,18 @@ def main():
 
             # TODO: file error handling here
 
-            temp_bash_script_f = open('.tmp.sh', 'w')
+            tmp_script = '.bhmsh.tmp.sh'
+
+            temp_bash_script_f = open(tmp_script, 'w')
             temp_bash_script_f.write(bash_script)
             temp_bash_script_f.close()
 
-            myProc = subprocess.run(args = [ '/bin/bash', '.tmp.sh' ],
-                                    capture_output = True)
+            try:
+                myProc = subprocess.run(args = [ '/bin/bash', tmp_script ],
+                                        capture_output = True)
+
+            finally:
+                os.remove('.bhmsh.tmp.sh')
 
             bash_output = None
 
@@ -350,3 +359,6 @@ def main():
         chatgpt_processed_res = chat_completion.choices[0].message.content
 
         print(f' >> {chatgpt_processed_res}\n')
+
+if __name__ == '__main__':
+    main()
