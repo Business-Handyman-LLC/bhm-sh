@@ -181,7 +181,7 @@ def init_prompt_list():
 def main():
     # TODO: Inject version here
     print(f'{os.linesep}')
-    print('        ~~~    BHMsh v1.1.2    ~~~')
+    print('        ~~~    BHMsh v1.1.3    ~~~')
     print(f'{os.linesep}')
 
     arg_parser = argparse.ArgumentParser(prog='GPTsh',
@@ -224,7 +224,7 @@ def main():
 
         except EOFError:
             print(f'{os.linesep}')
-            print(f' >> GPTsh terminating...{os.linesep}')
+            print(f' >> BHMsh terminating...{os.linesep}')
 
             sys.exit()
 
